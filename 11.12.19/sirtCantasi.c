@@ -1,43 +1,65 @@
-#include <stdio.h>
-#define b 56
-#define n 4
+#include<stdio.h> 
+  
+// A utility function that returns maximum of two integers 
+int max(int a, int b) { return (a > b)? a : b; } 
+  
+// Returns the maximum value that can be put in a knapsack of capacity W 
+int knapSack(int capacity, int weights[], int values[], int size) 
+{ 
+   int i, j; 
+   int K[size+1][capacity+1]; 
+   
+  
+   // Build table K[][] in bottom up manner 
+   for (i = 0; i <= size; i++) 
+   { 
+		if(i == 0) printf("   0->>");
+		else  printf ("%4d->>",weights[i-1]);
+		
+       for (j = 0; j <= capacity; j++)  
+       { 
+           if (i==0 || j==0) 
+               K[i][j] = 0; 
+               
+           else if (weights[i-1] <= j) 
+                 K[i][j] = max(values[i-1] + K[i-1][j-weights[i-1]],  K[i-1][j]); 
+                 
+           else
+                 K[i][j] = K[i-1][j]; 
+        
+        printf("%4d",K[i][j]);
+       } 
+       printf("\n");
+   } 
 
-int max(int x, int y)
-{
-	return (x>y)?x:y;
-}
 
-int main()
-{
-	int canta[n+1][b+1]={0}; 
-	int agirlik[n+1]={0,3,7,3,4}; 
-	int fayda[n+1]=  {0,21,35,13,5}; 
-	int k,t,BB;
-	
-	for(k=1; k<=n; k++)
-	{
-		for(t=1; t<=b; t++)
-		{
-		 	if(agirlik[k] <= t)
-				canta[k][t] = max(canta[k-1][t], fayda[k]+canta[k-1][t-agirlik[k]]);
-			else
-				canta[k][t] = canta[k-1][t];
-			printf("%3d",canta[k][t]);
-		}
-		printf("\n");
-	}
-	
-	BB= b;
-	
-	printf("\n\nEsya , agirlik , fayda");
-	for(k=n; k>0; k--)	
-		for(t=BB; t>0; t--)		
-			if(canta[k][t] != canta[k-1][t])
-			{
-				printf("\n%3d%8d%9d",k,agirlik[k],fayda[k]);
-				BB -= agirlik[k];
-				break;
-			}							
-			
-	return 0;
-}
+
+    int counter = 0;
+    //applied back tracking process
+    while (size > 0 && capacity > 0)
+    {
+
+        if (K[size][capacity] != K[size-1][capacity])
+        {
+            counter++;
+             printf("%d  : %d\n",weights[size -1], values[size -1]);
+            capacity -= weights[size-1];
+        }
+        size --;
+    }
+
+
+
+return K[size][capacity]; 
+    
+} 
+  
+int main() 
+{ 
+    int values[] = {605, 302, 303}; 
+    int weights[] = {20, 5, 10}; 
+    int  capacity = 20; 
+    int size = sizeof(values)/sizeof(values[0]); 
+    printf("%d", knapSack(capacity, weights, values, size)); 
+    return 0; 
+} 
